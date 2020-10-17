@@ -53,10 +53,8 @@ var rectangle2= new Rectangle2(800,350,100,100,4)
             requestAnimationFrame(animateReverse);
             c.clearRect(0, 0, innerWidth, innerHeight);
             rectangle.update();
-            rectangle2.update();
-            
+            rectangle2.update();            
         }
-
         animateReverse();
     
 
