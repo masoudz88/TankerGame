@@ -1,7 +1,7 @@
-var canvas= document.querySelector("canvas");
+let canvas= document.querySelector("canvas");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-var c = canvas.getContext('2d');
+const c = canvas.getContext('2d');
 
 
 function Rectangle(x,y,w,h,dx){
@@ -44,8 +44,8 @@ function Rectangle2(x,y,w,h,dx){
         this.draw();
     }
 }
-var rectangle= new Rectangle(200,350,100,100,4)
-var rectangle2= new Rectangle2(800,350,100,100,4)
+let rectangle= new Rectangle(200,350,100,100,4)
+//var rectangle2= new Rectangle2(800,350,100,100,4)
 
 
 
@@ -53,7 +53,7 @@ var rectangle2= new Rectangle2(800,350,100,100,4)
             requestAnimationFrame(animateReverse);
             c.clearRect(0, 0, innerWidth, innerHeight);
             rectangle.update();
-            rectangle2.update();            
+            //rectangle2.update();            
         }
         animateReverse();
     
