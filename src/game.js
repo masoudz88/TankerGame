@@ -1,9 +1,9 @@
 // call the canvas from index.html
-function Tank(x,y,xmove,ymove){
+function Tank(x,y){
     this.x=x
     this.y=y
-    this.xmove= xmove
-    this.ymove=ymove
+    this.xmove= 10
+    
     let canvas= document.querySelector("canvas");
     //set the dimensions of canvas
     canvas.width = window.innerWidth;
@@ -18,20 +18,38 @@ function Tank(x,y,xmove,ymove){
         return this.x
     }
     this.update= function(){
-        this.x=this.x+this.xmove;
-        this.y=this.y+this.ymove;
+        this.x=this.x+this.xmove;       
         
     };
-    this.draw= function(){        
-        this.update();
+    this.show= function(){         
         c.drawImage(image,this.x,this.y,150,150)
     };
+    function onkeydown() {
+        if (keyCode == 39) {
+            this.x++;
+        } //right arrow
+        else if (e.keyCode == 37) {
+            this.x--;
+        } //left arrow
+        else if (e.keyCode == 38) {
+            this.y--;
+        } //up arrow
+        else if (e.keyCode == 40) {
+            this.y++;
+        } //down arrow
+        c.drawImage(image,this.x,this.y,150,150)
+    }
+    window.addEventListener("keydown", onkeydown);
     
 }
-let tank1=new Tank(200,400,200,100);
-tank1.draw()
+function draw(){
+    let tank1=new Tank(200,400,200,100);
+    tank1.update()
+    tank1.show()
+}
 
-console.log(tank1.getX())
+draw()
+
 
 
 
