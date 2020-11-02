@@ -3,6 +3,7 @@ function Tank(x,y){
     this.x=x
     this.y=y
     this.xmove= 10
+    this.ymove= 10
     
     let canvas= document.querySelector("canvas");
     //set the dimensions of canvas
@@ -24,18 +25,20 @@ function Tank(x,y){
     this.show= function(){         
         c.drawImage(image,this.x,this.y,150,150)
     };
+    //moving tank object with arrow keys
+    
     function onkeydown() {
-        if (keyCode == 39) {
-            this.x++;
+        if (Event.keyCode == 39) {
+            this.x +=this.xmove;
         } //right arrow
-        else if (e.keyCode == 37) {
-            this.x--;
+        else if (Event.keyCode == 37) {
+            this.x-= this.xmove;
         } //left arrow
-        else if (e.keyCode == 38) {
-            this.y--;
+        else if (Event.keyCode == 38) {
+            this.y-= this.ymove;
         } //up arrow
-        else if (e.keyCode == 40) {
-            this.y++;
+        else if (Event.keyCode == 40) {
+            this.y+= this.ymove;
         } //down arrow
         c.drawImage(image,this.x,this.y,150,150)
     }
