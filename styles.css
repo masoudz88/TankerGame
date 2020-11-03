@@ -35,7 +35,12 @@ h2 {
     border-color:rgb(70, 211, 70);
     border-radius: 5%;
     text-align: center;
+    display: inline-block;
 }
+.categories:hover {
+    background-color: #4CAF50;
+    color: white;
+  }
 .categories1 {
     background-color: rgb(8, 109, 8);
     padding: 0.3em;
@@ -47,7 +52,12 @@ h2 {
     border-radius: 5%;
     text-align: center;
     margin-top: 1em;
+    display: inline-block;    
     
 }
+.categories1:hover {
+    background-color: #4CAF50;
+    color: white;
+  }
 
 
