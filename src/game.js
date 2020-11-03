@@ -18,40 +18,36 @@ function Tank(x,y){
     this.getX= function(){
         return this.x
     }
-    this.update= function(){
+    /*this.update= function(){
         this.x=this.x+this.xmove;       
         
-    };
+    };*/
     this.show= function(){         
         c.drawImage(image,this.x,this.y,150,150)
     };
     //moving tank object with arrow keys
-    
-    function onkeydown() {
-        if (Event.keyCode == 39) {
-            this.x +=this.xmove;
-        } //right arrow
-        else if (Event.keyCode == 37) {
-            this.x-= this.xmove;
-        } //left arrow
-        else if (Event.keyCode == 38) {
-            this.y-= this.ymove;
-        } //up arrow
-        else if (Event.keyCode == 40) {
-            this.y+= this.ymove;
-        } //down arrow
-        c.drawImage(image,this.x,this.y,150,150)
-    }
-    window.addEventListener("keydown", onkeydown);
+    let interval;
+    document.addEventListener("keydown", Event =>{        
+            if (Event.key === ArrowRight) {
+                interval=setInterval(moveRight, this.xmove)
+            } //right arrow
+            else if (Event.key === ArrowLeft) {
+                interval=setInterval(moveLeft, this.xmove)
+            } //left arrow        
+        });  
+    document.addEventListener("keyup", Event =>{   
+        clearInterval(interval)
+    } );  
     
 }
-function draw(){
-    let tank1=new Tank(200,400,200,100);
-    tank1.update()
-    tank1.show()
-}
+    
+    
 
-draw()
+
+let tank1=new Tank(200,400);
+tank1.show()
+
+
 
 
 
