@@ -14,29 +14,42 @@ class Tank {
         drawTank(){             
             this.ctx.drawImage(this.img, this.x, this.y,150,150);            
         }
-        movement(){
-            
+
+        tankAim(){            
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.x+90, this.y+70);
+            this.ctx.lineTo(this.x+150, this.y+60);            
+            this.ctx.stroke();
+        }
+        movement(){            
 
             document.addEventListener("keydown", Event =>{        
                 this.ctx.clearRect(0,0, innerWidth, innerHeight)
                 if (Event.key === "ArrowRight") {
                     console.log("right");
                     this.x+=10; 
-                    this.ctx.drawImage(this.img, this.x, this.y,150,150);    
+                    this.ctx.drawImage(this.img, this.x, this.y,150,150);
+                    this.tankAim() 
+                    if (this.x> innerWidth ) {
+                        this.x=200;
+                    }   
                     
                     } //right arrow
                 else if (Event.key === "ArrowLeft") {
                     console.log("left");
                     this.x-=10;
-                    this.ctx.drawImage(this.img, this.x, this.y,150,150);
-                    } //left arrow        
+                    this.ctx.drawImage(this.img, this.x, this.y,150,150); 
+                    this.tankAim()
+                }//left arrow 
+                           
                 });
         }
     }
 
     const myTank= new Tank(200,400)
     myTank.drawTank()    
-    myTank.movement()    
+    myTank.movement() 
+    myTank.tankAim()    
     console.log(myTank)
     
  
