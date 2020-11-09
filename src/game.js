@@ -15,8 +15,10 @@ class Tank {
             this.ctx.drawImage(this.img, this.x, this.y,150,150);            
         }
         movement(){
+            
+
             document.addEventListener("keydown", Event =>{        
-                
+                this.ctx.clearRect(0,0, innerWidth, innerHeight)
                 if (Event.key === "ArrowRight") {
                     console.log("right");
                     this.x+=10; 
