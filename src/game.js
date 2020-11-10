@@ -7,7 +7,7 @@ class Tank {
         this.c.width = window.innerWidth;
         this.c.height = window.innerHeight;        
         this.ctx = this.c.getContext("2d");
-        this.img = document.getElementById("tank");
+        this.img = document.getElementById("tank");        
         console.log("Tank")
     }
         
@@ -15,14 +15,42 @@ class Tank {
             this.ctx.drawImage(this.img, this.x, this.y,150,150);            
         }
 
-        tankAim(){            
-            this.ctx.beginPath();
-            this.ctx.moveTo(this.x+90, this.y+70);
-            this.ctx.lineTo(this.x+150, this.y+60);            
-            this.ctx.stroke();
+        tankAim(){ 
+            for (let i=0; i<7; i++){                
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.x+90-i, this.y+70-i);
+                this.ctx.lineTo(this.x+150-i, this.y+60-i);            
+                this.ctx.stroke();
+            }           
+            
         }
-        movement(){            
+        
+        /*aimMove()   {
+            document.addEventListener("keydown", Event =>{        
+                this.ctx.clearRect(0,0, innerWidth, innerHeight)
+                if (Event.key === "ArrowUp") {
+                    console.log("up");
+                    this.x-=10;
+                    this.y-=10;                     
+                    this.ctx.lineTo(this.x+150, this.y+60);            
+                    this.ctx.stroke();                     
+                    
+                    } //arrow up
+                else if (Event.key === "ArrowDown") {
+                    console.log("down");
+                    this.x+=10;
+                    this.y+=10;                    
+                    this.ctx.lineTo(this.x+150, this.y+60);            
+                    this.ctx.stroke();
+                }//arrow down 
+                           
+                });
 
+        } */
+            
+        
+        movement(){            
+            
             document.addEventListener("keydown", Event =>{        
                 this.ctx.clearRect(0,0, innerWidth, innerHeight)
                 if (Event.key === "ArrowRight") {
@@ -47,9 +75,11 @@ class Tank {
     }
 
     const myTank= new Tank(200,400)
-    myTank.drawTank()    
+        
     myTank.movement() 
-    myTank.tankAim()    
+    myTank.tankAim() 
+    myTank.drawTank() 
+    //myTank.aimMove()  
     console.log(myTank)
     
  
