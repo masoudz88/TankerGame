@@ -5,6 +5,8 @@ class Tank {
         this.y=y;
         this.a=this.x+90;
         this.b=this.y+70;
+        this.w=0;
+        this.count=0;
         this.t=0;
         this.c = document.getElementById("myCanvas");            
         this.c.width = window.innerWidth;
@@ -77,18 +79,20 @@ class Tank {
                     
                 }//arrow down 
                 else if (Event.key === "s") {
-                    console.log("s");                    
+                    console.log("s"); 
+                    this.w+=1;
+                    this.count+=1;
+                    console.log(this.count);                                       
                     for(let i=0; i<=100; i++){
                         this.ctx.beginPath();
-                        this.ctx.clearRect(this.a+60-8+i, this.b-20, 15, 15);
+                        this.ctx.clearRect(this.a+60-8+i, this.b-20-this.w, 15, 15);
                         this.ctx.closePath();
                         this.ctx.drawImage(this.img, this.x, this.y,150,150);
                         this.tankAim();
                         this.ctx.beginPath();
-                        this.ctx.arc(this.a+60+i, this.b-10, 1, 0, Math.PI*2, false);
+                        this.ctx.arc(this.a+60+i, this.b-10-this.w, 1, 0, Math.PI*2, false);
                         this.ctx.closePath();                    
-                        this.ctx.stroke();
-                        
+                        this.ctx.stroke();                                                                        
 
                     }
                      
