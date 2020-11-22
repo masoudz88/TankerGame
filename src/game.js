@@ -110,7 +110,8 @@ class Tank {
         
     myTank.movement() 
     myTank.tankAim() 
-    myTank.drawTank()      
+    myTank.drawTank()  
+    console.log(myTank)    
     
 
    
