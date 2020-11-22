@@ -1,6 +1,6 @@
 // call the canvas from index.html
 class Tank {
-    constructor(x,y,a,b){
+    constructor(x,y){
         this.x=x;
         this.y=y;
         this.a=this.x+90;
@@ -25,7 +25,7 @@ class Tank {
             //for (let i=0; i<7; i++){                
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.a, this.b);
-                this.ctx.lineTo(this.a+60, this.b-10); 
+                this.ctx.lineTo(this.a+65, this.b-10); 
                 this.ctx.lineWidth = 10;
                 this.ctx.stroke();                       
             
@@ -77,7 +77,8 @@ class Tank {
                     this.ctx.lineWidth = 10;
                     this.ctx.stroke();
                     
-                }//arrow down 
+                }//arrow down
+                //shooting when pressing s 
                 else if (Event.key === "s") {
                     console.log("s"); 
                     this.w+=1;
@@ -92,30 +93,29 @@ class Tank {
                         this.ctx.beginPath();
                         this.ctx.arc(this.a+60+i, this.b-10-this.w, 1, 0, Math.PI*2, false);
                         this.ctx.closePath();                    
-                        this.ctx.stroke();                                                                        
-
-                    }
-                     
-                    
-                    
+                        this.ctx.stroke();                                                             
+                    }  
                 }//arrow down
                 else{
                     console.log("invalid key");
                     this.ctx.drawImage(this.img, this.x, this.y,150,150);
+                    this.tankAim();
                 }
             });                   
             
         }
     }
 
-    const myTank= new Tank(200,400,200,400)
+    const myTank= new Tank(250,400)   
         
     myTank.movement() 
     myTank.tankAim() 
-    myTank.drawTank() 
-    //myTank.aimMove()  
-    console.log(myTank)
+    myTank.drawTank()      
+    
 
+   
+
+    
     
     
  
