@@ -57,26 +57,49 @@ class Tank {
                 //left arrow 
                 else if (Event.key === "ArrowUp") {
                     console.log("up");
-                    this.ctx.drawImage(this.img, this.x, this.y,150,150);                    
-                    this.t -=5; 
-                    //move the tank aim up  as the variable t changes
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(this.a, this.b);
-                    this.ctx.lineTo(this.a+60+this.t, this.b-10+this.t); 
-                    this.ctx.lineWidth = 10;
-                    this.ctx.stroke();                   
+                    let upLimit=true
+                    if (this.t>-30 && upLimit){
+                        this.ctx.drawImage(this.img, this.x, this.y,150,150);                    
+                        this.t -=5; 
+                        //move the tank aim up  as the variable t changes
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(this.a, this.b);
+                        this.ctx.lineTo(this.a+60+this.t, this.b-10+this.t); 
+                        this.ctx.lineWidth = 10;
+                        this.ctx.stroke();
+                    }
+                    else{
+                        this.ctx.drawImage(this.img, this.x, this.y,150,150);                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(this.a, this.b);
+                        this.ctx.lineTo(this.a+60+this.t, this.b-10+this.t); 
+                        this.ctx.lineWidth = 10;
+                        this.ctx.stroke();
+                        upLimit=false
+                    }
+                                       
                     } //arrow up
                 else if (Event.key === "ArrowDown") {
                     console.log("down");
-                    this.ctx.drawImage(this.img, this.x, this.y,150,150);
-                    this.t +=5;
-                    //move the tank aim down  as the variable t changes 
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(this.a, this.b);
-                    this.ctx.lineTo(this.a+60+this.t, this.b-10+this.t); 
-                    this.ctx.lineWidth = 10;
-                    this.ctx.stroke();
-                    
+                    let downLimit=true
+                    if (this.t<10 && downLimit){ 
+                        this.ctx.drawImage(this.img, this.x, this.y,150,150);
+                        this.t +=5;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(this.a, this.b);
+                        this.ctx.lineTo(this.a+60+this.t, this.b-10+this.t); 
+                        this.ctx.lineWidth = 10;
+                        this.ctx.stroke();
+                    }
+                    else{
+                        this.ctx.drawImage(this.img, this.x, this.y,150,150);                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(this.a, this.b);
+                        this.ctx.lineTo(this.a+60+this.t, this.b-10+this.t); 
+                        this.ctx.lineWidth = 10;
+                        this.ctx.stroke();
+                        downLimit=false
+                    }
                 }//arrow down
                 //shooting when pressing s 
                 else if (Event.key === "s") {
@@ -111,7 +134,7 @@ class Tank {
     myTank.movement() 
     myTank.tankAim() 
     myTank.drawTank()  
-    console.log(myTank)    
+    //console.log(myTank)    
     
 
    
