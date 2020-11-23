@@ -106,7 +106,7 @@ class Tank {
         }
     }
 
-    const myTank= new Tank(250,400)   
+    const myTank= new Tank(200,400)   
         
     myTank.movement() 
     myTank.tankAim() 
