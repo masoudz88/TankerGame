@@ -1,11 +1,16 @@
 // call the canvas from index.html
-class Tank {
-    constructor(x,y){
+function Tank(x,y) {
+    //constructor(x,y){
         this.x=x;
         this.y=y;
         this.a=this.x+90;
-        this.b=this.y+70;
-        this.w=0;
+        this.b=this.y+70;        
+        this.radius=5;
+        this.g=0.1;
+        this.vx=2;
+        this.vy=0;
+        this.q=this.a+70;
+        this.p=this.b-10;
         this.count=0;
         this.t=0;
         this.c = document.getElementById("myCanvas");            
@@ -14,14 +19,14 @@ class Tank {
         this.ctx = this.c.getContext("2d");
         this.img = document.getElementById("tank");        
         console.log("constructed the tank")
-    }
+    //}
         
-        drawTank(){    
+        Tank.prototype.drawTank=function(){    
             console.log("drawing tank");
             this.ctx.drawImage(this.img, this.x, this.y,150,150); 
         }
 
-        tankAim(){ 
+        Tank.prototype.tankAim=function(){ 
             //for (let i=0; i<7; i++){                
                 this.ctx.beginPath();
                 this.ctx.moveTo(this.a, this.b);
@@ -30,10 +35,31 @@ class Tank {
                 this.ctx.stroke();                       
             
         }
+        //making the ball to move
+        Tank.prototype.drawBall=function() {                   
+            //this.ctx.clearRect(0, 0, 15, 15);
+            //fillStyle = color;
+            this.ctx.beginPath();
+            this.ctx.arc(this.a+70, this.b-10, this.radius, 0, Math.PI*2, true);
+            this.ctx.closePath();
+            this.ctx.fill();            
+            };
+            
+        Tank.prototype.init=function(){
+            setInterval(this.onEachStep(),  1000/60);            
+        };
+        
+        Tank.prototype.onEachStep=function() {
+            this.vy += this.g; // gravity increases the vertical speed
+            this.q += this.vx; // horizontal speed increases horizontal position
+            this.p += this.vy;// vertical speed increases vertical position            
+            this.drawBall();
+            console.log("hi")
+        };
 
             
         
-        movement(){            
+        Tank.prototype.movement=function(){            
             document.addEventListener("keydown", Event =>{        
                 this.ctx.clearRect(0,0, innerWidth, innerHeight)
                 if (Event.key === "ArrowRight") {
@@ -103,21 +129,13 @@ class Tank {
                 }//arrow down
                 //shooting when pressing s 
                 else if (Event.key === "s") {
-                    console.log("s"); 
-                    this.w+=1;
-                    this.count+=1;
-                    console.log(this.count);                                       
-                    for(let i=0; i<=100; i++){
-                        this.ctx.beginPath();
-                        this.ctx.clearRect(this.a+60-8+i, this.b-20-this.w, 15, 15);
-                        this.ctx.closePath();
-                        this.ctx.drawImage(this.img, this.x, this.y,150,150);
-                        this.tankAim();
-                        this.ctx.beginPath();
-                        this.ctx.arc(this.a+60+i, this.b-10-this.w, 1, 0, Math.PI*2, false);
-                        this.ctx.closePath();                    
-                        this.ctx.stroke();                                                             
-                    }  
+                    console.log("s");                     
+                    this.count+=1;                    
+                    this.ctx.drawImage(this.img, this.x, this.y,150,150);
+                    this.tankAim();                    
+                    this.init()
+                    
+                        
                 }//arrow down
                 else{
                     console.log("invalid key");
@@ -128,8 +146,10 @@ class Tank {
             
         }
     }
+    
+        
 
-    const myTank= new Tank(250,400)   
+    myTank= new Tank(250,400)   
         
     myTank.movement() 
     myTank.tankAim() 
