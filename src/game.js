@@ -17,12 +17,9 @@ class Tank {
         this.y=y;
         this.aim_start_point_x=this.x+TANK_BARREL_GAP_X; // TODO: bad naming (uncle bob)
         this.aim_start_point_y=this.y+TANK_BARREL_GAP_Y; // TODO: magic variable -> constants
-        this.radius=5;
-        this.g=0.1;
-        this.vx=2;
-        this.vy=0;
-        //this.q=this.a+70;
-        //this.p=this.b-10;
+        this.ball_start_point=this.aim_start_point_x;
+        this.ball_end_point=this.aim_start_point_y;
+        this.radius=5;       
         this.count=0;
         this.barrel_limit=0;
         this.c = document.getElementById("myCanvas");            
@@ -50,9 +47,9 @@ class Tank {
         }
         //making the ball to move
         drawBall() {                   
-            this.ctx.clearRect(0, 0, 15, 15);            
+                        
             this.ctx.beginPath();
-            this.ctx.arc(this.aim_start_point_x+70, this.aim_start_point_y-10, this.radius, 0, Math.PI*2, true);
+            this.ctx.arc(this.ball_start_point+70, this.ball_end_point-10, this.radius, 0, Math.PI*2, true);
             this.ctx.closePath();
             this.ctx.fill();
             console.log("this is a ball")
@@ -60,22 +57,15 @@ class Tank {
         
         // TODO: function name is confusing
         moveBullet(){
-            setInterval(() => { this.onEachStep() }, 1000/60);
+            setInterval(() => { this.moveOnEachStep() }, 1000/60);
         };
 
         // TODO: function names: verb
         moveOnEachStep () {
-            this.vy += this.g; // gravity increases the vertical speed
-            this.q += this.vx; // horizontal speed increases horizontal position
-            this.p += this.vy; // vertical speed increases vertical position
-            //if (this.y > this.c.innerheight - this.radius){ // if ball hits the ground
-            //this.y = this.c.innerheight - this.radius; // reposition it at the ground
-            //this.vy *= -0.8; // then reverse and reduce its vertical speed
-            //}
-            //if (this.x > this.c.innerwidth + this.radius){ // if ball goes beyond canvas
-           // this.x = -this.radius; // wrap it around
-            //}
-            this.drawBall();
+            this.ctx.clearRect(this.ball_start_point+60, this.ball_end_point-10, 50, 50);            
+            this.ball_start_point += 5; 
+            this.ball_end_point -= 5;            
+            this.drawBall();            
             console.log("hi")
         };
 
@@ -123,9 +113,9 @@ class Tank {
                 else if (Event.key === "ArrowDown") {
                     console.log("down");
                     let downLimit=true
-                    if (this.t<10 && downLimit){ 
+                    if (this.barrel_limit<10 && downLimit){ 
                         this.ctx.drawImage(this.img, this.x, this.y,IMAGE_WIDTH,IMAGE_HEIGHT);
-                        this.t +=UP_MOVEMENT_ON_EACH_CLICK;
+                        this.barrel_limit +=UP_MOVEMENT_ON_EACH_CLICK;
                         this.ctx.beginPath();
                         this.ctx.moveTo(this.aim_start_point_x, this.aim_start_point_y);
                         this.ctx.lineTo(this.aim_start_point_x+60+this.barrel_limit, this.aim_start_point_y-10+this.barrel_limit); 
@@ -144,13 +134,15 @@ class Tank {
                 }//arrow down
                 //shooting when pressing s 
                 else if (Event.key === "s") {
-                    console.log("s");                     
-                    this.count+=1;                    
+                    console.log("s"); 
+                    this.ball_start_point=this.aim_start_point_x;
+                    this.ball_end_point=this.aim_start_point_y;                    
+                    this.count+=1; 
+                    this.ctx.clearRect(0, 0, 15, 15);                    
                     this.ctx.drawImage(this.img, this.x, this.y,IMAGE_WIDTH,IMAGE_HEIGHT);
-                    this.tankAim();
-                    //this.drawBall();
-                    //this.onEachStep();
-                    this.init()
+                    this.tankAim();  
+                    this.drawBall();                                   
+                    this.moveBullet()
                     
                         
                 }//arrow down
