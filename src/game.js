@@ -9,6 +9,10 @@ const UP_MOVEMENT_ON_EACH_CLICK=5;
 const IMAGE_WIDTH=150;
 const IMAGE_HEIGHT=150;
 const TANK_BARREL_ENDPOINT_GAP_=65;
+const TANK_BALL_GAP_X = 70;
+const TANK_BALL_GAP_Y= 10;
+const TANK_BALL_CLEAR_X = 60;
+const TANK_BALL_CLEAR_Y= 10;
 
 
 class Tank {
@@ -46,10 +50,9 @@ class Tank {
             
         }
         //making the ball to move
-        drawBall() {                   
-                        
+        drawBall() {                        
             this.ctx.beginPath();
-            this.ctx.arc(this.ball_start_point+70, this.ball_end_point-10, this.radius, 0, Math.PI*2, true);
+            this.ctx.arc(this.ball_start_point+TANK_BALL_GAP_X, this.ball_end_point-TANK_BALL_GAP_Y, this.radius, 0, Math.PI*2, true);
             this.ctx.closePath();
             this.ctx.fill();
             console.log("this is a ball")
@@ -62,11 +65,18 @@ class Tank {
 
         // TODO: function names: verb
         moveOnEachStep () {
-            this.ctx.clearRect(this.ball_start_point+60, this.ball_end_point-10, 50, 50);            
+            this.ctx.clearRect(this.ball_start_point+TANK_BALL_CLEAR_X, this.ball_end_point-TANK_BALL_CLEAR_Y, 100, 100);            
             this.ball_start_point += 5; 
-            this.ball_end_point -= 5;            
+            this.ball_end_point -= 5;  
+            if(this.ball_start_point>300 && this.ball_end_point<100){
+                this.ball_start_point += 5;
+                this.ball_end_point += 5;
+                if(this.ball_start_point>this.c.width){
+                    return;
+                }                
+            }       
             this.drawBall();            
-            console.log("hi")
+            console.log(this.ball_end_point)
         };
 
             
@@ -137,8 +147,7 @@ class Tank {
                     console.log("s"); 
                     this.ball_start_point=this.aim_start_point_x;
                     this.ball_end_point=this.aim_start_point_y;                    
-                    this.count+=1; 
-                    this.ctx.clearRect(0, 0, 15, 15);                    
+                    this.count+=1;                                         
                     this.ctx.drawImage(this.img, this.x, this.y,IMAGE_WIDTH,IMAGE_HEIGHT);
                     this.tankAim();  
                     this.drawBall();                                   
