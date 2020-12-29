@@ -1,6 +1,7 @@
 // TODO: move the ball
 
 // call the canvas from index.html
+
 const TANK_BARREL_GAP_Y = 70;
 const TANK_BARREL_GAP_X = 90;
 const TANK_MOVE_INTERVALS=10;
@@ -9,21 +10,24 @@ const UP_MOVEMENT_ON_EACH_CLICK=5;
 const IMAGE_WIDTH=150;
 const IMAGE_HEIGHT=150;
 const TANK_BARREL_ENDPOINT_GAP_=65;
-const TANK_BALL_GAP_X = 70;
-const TANK_BALL_GAP_Y= 10;
-const TANK_BALL_CLEAR_X = 60;
-const TANK_BALL_CLEAR_Y= 10;
+const TANK_BALL_GAP_X = 90;
+const TANK_BALL_GAP_Y= 20;
+const TANK_BALL_CLEAR_X = 70;
+const TANK_BALL_CLEAR_Y= 100;
 
 
 class Tank {
-    constructor(x,y){
+    constructor(x,y){        
         this.x=x; 
         this.y=y;
+        this.g = 0.1; // acceleration due to gravity        
+        this.xSpeed = 2; // initial horizontal speed
+        this.ySpeed = 2.3; // initial vertical speed
         this.aim_start_point_x=this.x+TANK_BARREL_GAP_X; // TODO: bad naming (uncle bob)
         this.aim_start_point_y=this.y+TANK_BARREL_GAP_Y; // TODO: magic variable -> constants
         this.ball_start_point=this.aim_start_point_x;
         this.ball_end_point=this.aim_start_point_y;
-        this.radius=5;       
+        this.radius=10;       
         this.count=0;
         this.barrel_limit=0;
         this.c = document.getElementById("myCanvas");            
@@ -32,8 +36,8 @@ class Tank {
         this.ctx = this.c.getContext("2d");
         this.img = document.getElementById("tank");  
         this.moveOnEachStep.bind(this);      
-        console.log(this);
-        console.log("constructed the tank")
+        console.log(this);        
+        
     }
         
         drawTank(){    
@@ -65,19 +69,24 @@ class Tank {
 
         // TODO: function names: verb
         moveOnEachStep () {
-            this.ctx.clearRect(this.ball_start_point+TANK_BALL_CLEAR_X, this.ball_end_point-TANK_BALL_CLEAR_Y, 100, 100);            
-            this.ball_start_point += 5; 
-            this.ball_end_point -= 5;  
-            if(this.ball_start_point>300 && this.ball_end_point<100){
-                this.ball_start_point += 5;
-                this.ball_end_point += 5;
-                if(this.ball_start_point>this.c.width){
-                    return;
-                }                
-            }       
+            this.ctx.clearRect(this.ball_start_point+TANK_BALL_CLEAR_X, this.ball_end_point-TANK_BALL_CLEAR_Y, 100, 100); 
+            this.ySpeed += this.g; 
+            this.ball_end_point -= this.ySpeed*0.3;         
+            this.ball_start_point += this.xSpeed*2; 
+              
+            if (this.ball_end_point <this.radius){ // if ball hits the height of canvas
+                //this.ball_end_point = this.c.height - radius; // reposition it at the ground
+                this.ySpeed *= -0.7; // then reverse and reduce its vertical speed                               
+                if (this.ball_end_point < this.radius && this.ball_start_point>this.c.width){ // if ball goes beyond canvas
+                    return 
+            }                                               
+                               
+            }          
+            
             this.drawBall();            
             console.log(this.ball_end_point)
-        };
+            console.log(this.ball_start_point)
+        };        
 
             
         // TODO: clean up the if/elses to make it more concise
@@ -176,6 +185,9 @@ class Tank {
     //TODO: think about the project    
     
 
+    
+
+    
    
 
     
