@@ -71,13 +71,13 @@ class Tank {
         moveOnEachStep () {
             this.ctx.clearRect(this.ball_start_point+TANK_BALL_CLEAR_X, this.ball_end_point-TANK_BALL_CLEAR_Y, 100, 100); 
             this.ySpeed += this.g; 
-            this.ball_end_point -= this.ySpeed*0.3;         
+            this.ball_end_point -= this.ySpeed*0.2;         
             this.ball_start_point += this.xSpeed*2; 
               
-            if (this.ball_end_point <this.radius){ // if ball hits the height of canvas
+            if (this.ball_end_point <this.c.height/2 ){ // if ball hits the height of canvas
                 //this.ball_end_point = this.c.height - radius; // reposition it at the ground
-                this.ySpeed *= -0.7; // then reverse and reduce its vertical speed                               
-                if (this.ball_end_point < this.radius && this.ball_start_point>this.c.width){ // if ball goes beyond canvas
+                this.ySpeed *= -1.000000000001; // then reverse and reduce its vertical speed                               
+                if (this.ball_end_point < this.radius && this.ball_start_point>this.c.width/2){ // if ball goes beyond canvas
                     return 
             }                                               
                                
@@ -155,7 +155,9 @@ class Tank {
                 else if (Event.key === "s") {
                     console.log("s"); 
                     this.ball_start_point=this.aim_start_point_x;
-                    this.ball_end_point=this.aim_start_point_y;                    
+                    this.ball_end_point=this.aim_start_point_y;
+                    this.xSpeed = 2; 
+                    this.ySpeed = 2.3                    
                     this.count+=1;                                         
                     this.ctx.drawImage(this.img, this.x, this.y,IMAGE_WIDTH,IMAGE_HEIGHT);
                     this.tankAim();  
@@ -185,7 +187,20 @@ class Tank {
     //TODO: think about the project    
     
 
+    function reqListener(receivedData) {
+        console.log(receivedData);
+    }
+
+    const oReq = new XMLHttpRequest();
+    oReq.onreadystatechange = function() {
+        if (oReq.readyState == XMLHttpRequest.DONE) {
+            const data = JSON.parse(oReq.response)
+            console.log(data.highscore);
+        }
+    }
+    oReq.open("GET", "data.json");
     
+    oReq.send();
 
     
    
