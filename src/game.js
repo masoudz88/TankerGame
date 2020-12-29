@@ -20,7 +20,7 @@ class Tank {
     constructor(x,y){        
         this.x=x; 
         this.y=y;
-        this.g = 0.1; // acceleration due to gravity        
+        this.g = 0.08; // acceleration due to gravity        
         this.xSpeed = 2; // initial horizontal speed
         this.ySpeed = 2.3; // initial vertical speed
         this.aim_start_point_x=this.x+TANK_BARREL_GAP_X; // TODO: bad naming (uncle bob)
@@ -70,13 +70,13 @@ class Tank {
         // TODO: function names: verb
         moveOnEachStep () {
             this.ctx.clearRect(this.ball_start_point+TANK_BALL_CLEAR_X, this.ball_end_point-TANK_BALL_CLEAR_Y, 100, 100); 
-            this.ySpeed += this.g; 
-            this.ball_end_point -= this.ySpeed*0.2;         
-            this.ball_start_point += this.xSpeed*2; 
+            this.ySpeed -= this.g; 
+            this.ball_end_point -= this.ySpeed*0.99;         
+            this.ball_start_point += this.xSpeed*Math.PI; 
               
             if (this.ball_end_point <this.c.height/2 ){ // if ball hits the height of canvas
                 //this.ball_end_point = this.c.height - radius; // reposition it at the ground
-                this.ySpeed *= -1.000000000001; // then reverse and reduce its vertical speed                               
+                this.ySpeed *= -0.000000000001; // then reverse and reduce its vertical speed                               
                 if (this.ball_end_point < this.radius && this.ball_start_point>this.c.width/2){ // if ball goes beyond canvas
                     return 
             }                                               
