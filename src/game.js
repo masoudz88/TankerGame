@@ -4,30 +4,33 @@
 
 
 let TANK_BARREL_GAP_Y=70 ;
-const TANK_BARREL_GAP_X = 90;
-const TANK_MOVE_INTERVALS = 10;
-const TANK_AIM_MOVE_INTERVALS = 10;
-const UP_MOVEMENT_ON_EACH_CLICK = 5;
-const IMAGE_WIDTH = 150;
-const IMAGE_HEIGHT = 150;
-const TANK_BARREL_ENDPOINT_GAP_ = 65;
-const TANK_BALL_GAP_X = 90;
-const TANK_BALL_GAP_Y = 20;
-const TANK_BALL_CLEAR_X = 70;
-const TANK_BALL_CLEAR_Y = 100;
+let TANK_BARREL_GAP_X = 90;
+let TANK_MOVE_INTERVALS = 10;
+let TANK_AIM_MOVE_INTERVALS = 10;
+let UP_MOVEMENT_ON_EACH_CLICK = 5;
+let IMAGE_WIDTH = 150;
+let IMAGE_HEIGHT = 150;
+let TANK_BARREL_ENDPOINT_GAP_ = 65;
+let TANK_BALL_GAP_X_1 = 90;
+let TANK_BALL_GAP_X_2 = 115;
+let TANK_BALL_GAP_Y = 20;
+let TANK_BALL_CLEAR_X_1 = 70;
+let TANK_BALL_CLEAR_X_2 = 200;
+let TANK_BALL_CLEAR_Y = 60;
 let highscore;
-let xSpeed = 2; // initial horizontal speed
-let ySpeed = 2; // initial vertical speed
+let X_AXIS_SPEED = 2; // initial horizontal speed
+let Y_AXIS_SPEED = 2; // initial vertical speed
+let GRAVITY= 0.08;
 
 // setup the game configuration and start the whole game
-function startGame() {
+function getData() {
     const oReq = new XMLHttpRequest();
     oReq.onreadystatechange = function () {
         if (oReq.readyState == XMLHttpRequest.DONE) {
             data = JSON.parse(oReq.response)            
             highscore= data.highscore;
-            console.log("highscore loaded", highscore); 
-            return data;                       
+            TANK_BARREL_GAP_Y= data.TANK_BARREL_GAP_Y;
+            console.log("highscore loaded", highscore);                                   
         }
     }
     oReq.open("GET", "data.json");
@@ -35,16 +38,13 @@ function startGame() {
     oReq.send();   
 }
 
-startGame();
 
 
 
 class Tank {
-    constructor(x, y) {
-        console.log("tank constructor", highscore);
+    constructor(x, y) {        
         this.x = x;
-        this.y = y;
-        this.g = 0.08; // acceleration due to gravity          
+        this.y = y;                
         this.aim_start_point_x = this.x + TANK_BARREL_GAP_X; // TODO: bad naming (uncle bob)
         this.aim_start_point_y = this.y + TANK_BARREL_GAP_Y; // TODO: magic variable -> constants
         this.ball_start_point = this.aim_start_point_x;
@@ -56,8 +56,7 @@ class Tank {
         this.c.width = window.innerWidth;
         this.c.height = window.innerHeight;
         this.ctx = this.c.getContext("2d");
-        this.img = document.getElementById("tank");
-        this.moveOnEachStep.bind(this);
+        this.img = document.getElementById("tank");        
         console.log(this);
         this.myVar;
 
@@ -69,7 +68,11 @@ class Tank {
         this.ctx.drawImage(this.img, this.x, this.y, IMAGE_WIDTH, IMAGE_HEIGHT);
     }
 
-    tankAim() {
+    getCanvas(){
+        return this.ctx;
+    }
+    //sets the aim on right side of the tank
+    tankAim1() {
         this.ctx.beginPath();
         this.ctx.moveTo(this.aim_start_point_x, this.aim_start_point_y);
         this.ctx.lineTo(this.aim_start_point_x + 65, this.aim_start_point_y - 10);
@@ -77,19 +80,39 @@ class Tank {
         this.ctx.stroke();
 
     }
-    //making the ball to move
-    drawBall() {
+
+    //sets the aim on left side of the tank
+    tankAim2() {
         this.ctx.beginPath();
-        this.ctx.arc(this.ball_start_point + TANK_BALL_GAP_X, this.ball_end_point - TANK_BALL_GAP_Y, this.radius, 0, Math.PI * 2, true);
+        this.ctx.moveTo(this.aim_start_point_x, this.aim_start_point_y);
+        this.ctx.lineTo(this.aim_start_point_x - 110, this.aim_start_point_y - 10);
+        this.ctx.lineWidth = 10;
+        this.ctx.stroke();
+
+    }
+    //making the ball to move
+    drawBall1() {
+        this.ctx.beginPath();
+        this.ctx.arc(this.ball_start_point + TANK_BALL_GAP_X_1, this.ball_end_point - TANK_BALL_GAP_Y, this.radius, 0, Math.PI * 2, true);
+        this.ctx.closePath();
+        this.ctx.fill();
+        console.log("this is a ball")
+    };
+    drawBall2() {
+        this.ctx.beginPath();
+        this.ctx.arc(this.ball_start_point - TANK_BALL_GAP_X_2, this.ball_end_point - TANK_BALL_GAP_Y, this.radius, 0, Math.PI * 2, true);
         this.ctx.closePath();
         this.ctx.fill();
         console.log("this is a ball")
     };
 
     // TODO: function name is confusing
-    moveBullet() {
-        this.myVar= setInterval(() => { this.moveOnEachStep() }, 1000 / 60);
-         //clearInterval(myVar);
+    moveBulletForward() {
+        this.myVar= setInterval(() => { this.shootForward() }, 1000 / 60);         
+         console.log("here ")
+    };
+    moveBulletBackward() {
+        this.myVar= setInterval(() => { this.shootBackward() }, 1000 / 60);        
          console.log("here ")
     };
 
@@ -99,26 +122,41 @@ class Tank {
     }
 
     // TODO: function names: verb
-    moveOnEachStep() {
-        this.ctx.clearRect(this.ball_start_point + TANK_BALL_CLEAR_X, this.ball_end_point - TANK_BALL_CLEAR_Y, 100, 100);
-        ySpeed -= this.g;
-        this.ball_end_point -= ySpeed * 8;
-        this.ball_start_point += xSpeed * 8;
+    shootForward() {
+        this.ctx.clearRect(this.ball_start_point + TANK_BALL_CLEAR_X_1, this.ball_end_point - TANK_BALL_CLEAR_Y, 100, 100);
+        Y_AXIS_SPEED -= GRAVITY;
+        this.ball_end_point -= Y_AXIS_SPEED * 8;
+        this.ball_start_point += X_AXIS_SPEED * 8;
 
         if (this.ball_end_point < this.c.height / 2) { // if ball hits the height of canvas
 
-            ySpeed *= -0.01; // then reverse and reduce its vertical speed
+            Y_AXIS_SPEED *= -0.01; // then reverse and reduce its vertical speed
         }
         if (this.ball_start_point > 1500 || this.ball_end_point > this.y) { // if ball goes beyond canvas
             return
         }
-
-
-
-        this.drawBall();
-        console.log(this.ball_end_point)
-        console.log(this.ball_start_point)
+        this.drawBall1();        
     };
+
+    // TODO: function names: verb
+    shootBackward() {
+        this.ctx.clearRect(this.ball_start_point - TANK_BALL_CLEAR_X_2, this.ball_end_point - TANK_BALL_CLEAR_Y, 100, 100);
+        Y_AXIS_SPEED -= GRAVITY;
+        this.ball_end_point -= Y_AXIS_SPEED * 8;
+        this.ball_start_point -= X_AXIS_SPEED * 8;
+
+        if (this.ball_end_point < this.c.height / 2) { // if ball hits the height of canvas
+
+            Y_AXIS_SPEED *= -0.01; // then reverse and reduce its vertical speed
+        }
+        if (this.ball_start_point < 100 || this.ball_end_point > this.y) { // if ball goes beyond canvas
+            return
+        }
+
+        this.drawBall2();        
+    };
+
+      
     // TODO: clean up the if/elses to make it more concise
     arrowKeyControl() {
         document.addEventListener("keydown", Event => {
@@ -127,13 +165,13 @@ class Tank {
                 this.x += TANK_MOVE_INTERVALS;
                 this.aim_start_point_x += TANK_AIM_MOVE_INTERVALS;
                 this.ctx.drawImage(this.img, this.x, this.y, IMAGE_WIDTH, IMAGE_HEIGHT);
-                this.tankAim()
+                this.tankAim1()
             } //right arrow
             else if (Event.key === "ArrowLeft") {
                 this.x -= TANK_MOVE_INTERVALS;
                 this.aim_start_point_x -= TANK_AIM_MOVE_INTERVALS;
                 this.ctx.drawImage(this.img, this.x, this.y, IMAGE_WIDTH, IMAGE_HEIGHT);
-                this.tankAim()
+                this.tankAim1()
             }
             //left arrow 
             else if (Event.key === "ArrowUp") {
@@ -180,61 +218,82 @@ class Tank {
                     this.ctx.stroke();
                     downLimit = false
                 }
-            }//arrow down
-            //shooting when pressing s 
-            else if (Event.key === "s") {
-                console.log("s");
-                this.stopBullet()// clear the interval
-                this.ball_start_point = this.aim_start_point_x;
-                this.ball_end_point = this.aim_start_point_y;
-                xSpeed = 2;
-                ySpeed = 2;
-                this.count += 1;
-                this.ctx.drawImage(this.img, this.x, this.y, IMAGE_WIDTH, IMAGE_HEIGHT);
-                this.tankAim();
-                this.drawBall();
-                this.moveBullet()
-                
-
-
-            }//arrow down
+            }
             else {
                 console.log("invalid key");
                 this.ctx.drawImage(this.img, this.x, this.y, IMAGE_WIDTH, IMAGE_HEIGHT);
                 this.tankAim();
             }
         });
+    }
+        buttomKeyControl1() {
+            document.addEventListener("keydown", Event => {
+            //this.ctx.clearRect(0, 0, innerWidth, innerHeight)
+            //left tank shooting when pressing s 
+            if (Event.key === "s" || Event.key === "S") {
+                console.log("s");
+                this.stopBullet()// clear the interval
+                this.ball_start_point = this.aim_start_point_x;
+                this.ball_end_point = this.aim_start_point_y;
+                X_AXIS_SPEED = 2;
+                Y_AXIS_SPEED = 2;
+                this.count += 1;
+                this.ctx.drawImage(this.img, this.x, this.y, IMAGE_WIDTH, IMAGE_HEIGHT);
+                this.tankAim1();
+                this.drawBall1();
+                this.moveBulletForward();  
+            }
+            else {
+                console.log("invalid key");
+                this.ctx.drawImage(this.img, this.x, this.y, IMAGE_WIDTH, IMAGE_HEIGHT);
+                this.tankAim1();
+            }
+        });
+    }
+            //right tank shooting when pressing d
+        buttomKeyControl2() {
+            document.addEventListener("keydown", Event => {
+            //this.ctx.clearRect(0, 0, innerWidth, innerHeight) 
+            if (Event.key === "d" || Event.key === "D") {
+                console.log("d");
+                this.stopBullet()// clear the interval
+                this.ball_start_point = this.aim_start_point_x;
+                this.ball_end_point = this.aim_start_point_y;
+                X_AXIS_SPEED = 2;
+                Y_AXIS_SPEED = 2;
+                this.count += 1;
+                this.ctx.drawImage(this.img, this.x, this.y, IMAGE_WIDTH, IMAGE_HEIGHT);
+                this.tankAim2();
+                this.drawBall2();
+                this.moveBulletBackward();  
+            }
+
+            else {
+                console.log("invalid key");
+                this.ctx.drawImage(this.img, this.x, this.y, IMAGE_WIDTH, IMAGE_HEIGHT);
+                this.tankAim2();
+            }
+        });
 
     }
 }
 
-document.addEventListener("keydown", Event => {
-    if (Event.key === "s") {
-        // which tank should shoot?
-        // shoot for that tank
-        console.log('this S')
-    }
-})
-
-
-const tank1 = new Tank(250, 400)
-//const tank2 = new Tank(500, 400)
-
-console.log("my tank")
-
-tank1.arrowKeyControl()
-tank1.tankAim()
-tank1.drawTank()
-//tank1.reqListener()
 
 
 
-//startGame();
-
-
-
-
-
+function startGame(){
+    const tank1 = new Tank(250, 400)
+    const tank2 = new Tank(700, 400)     
+    tank1.tankAim1()
+    tank1.drawTank()
+    tank2.tankAim2()
+    tank2.drawTank()
+    //tank2.drawBall2()
+    tank2.arrowKeyControl()  
+    tank1.buttomKeyControl1()
+    tank2.buttomKeyControl2() 
+}
+startGame();
 
 
 
