@@ -27,8 +27,7 @@ class Tank {
         this.ctx = this.c.getContext("2d");
         this.img = document.getElementById("tank");        
         console.log(this);
-        this.myVar;
-
+        
     }
     
 
@@ -38,49 +37,60 @@ class Tank {
     }
 
     //sets the aim on right side of the tank
-    tankAim1() {
+    tankAim() {
         this.ctx.beginPath();
         this.ctx.moveTo(this.aim_start_point_x, this.aim_start_point_y);
-        this.ctx.lineTo(this.aim_start_point_x + gameData.TANK_BARREL_ENDPOINT_GAP_X, this.aim_start_point_y - gameData.TANK_BARREL_ENDPOINT_GAP_Y);
+        if(this.direction=="left"){
+            this.ctx.lineTo(this.aim_start_point_x + gameData.TANK_BARREL_ENDPOINT_GAP_X, this.aim_start_point_y - gameData.TANK_BARREL_ENDPOINT_GAP_Y);
+        }
+        else if(this.direction=="right"){
+            this.ctx.lineTo(this.aim_start_point_x - 110, this.aim_start_point_y - 10);
+        }
         this.ctx.lineWidth = 10;
         this.ctx.stroke();
 
     }
 
     //sets the aim on left side of the tank
-    tankAim2() {
+    /*tankAim2() {
         this.ctx.beginPath();
         this.ctx.moveTo(this.aim_start_point_x, this.aim_start_point_y);
         this.ctx.lineTo(this.aim_start_point_x - 110, this.aim_start_point_y - 10);
         this.ctx.lineWidth = 10;
         this.ctx.stroke();
 
-    }
+    }*/
     //making the ball to move
-    drawBall1() {
+    drawBall() {
         this.ctx.beginPath();
-        this.ctx.arc(this.ball_start_point + gameData.TANK_BALL_GAP_X_1, this.ball_end_point - gameData.TANK_BALL_GAP_Y, this.radius, 0, Math.PI * 2, true);
+        if(this.direction=="left"){
+            this.ctx.arc(this.ball_start_point + gameData.TANK_BALL_GAP_X_1, this.ball_end_point - gameData.TANK_BALL_GAP_Y, this.radius, 0, Math.PI * 2, true);
+        }
+        else if(this.direction=="right"){
+            this.ctx.arc(this.ball_start_point - gameData.TANK_BALL_GAP_X_2, this.ball_end_point - gameData.TANK_BALL_GAP_Y, this.radius, 0, Math.PI * 2, true);
+        }
+        
         this.ctx.closePath();
         this.ctx.fill();
         console.log("this is a ball")
-    };
-    drawBall2() {
+    }
+    /*drawBall2() {
         this.ctx.beginPath();
         this.ctx.arc(this.ball_start_point - gameData.TANK_BALL_GAP_X_2, this.ball_end_point - gameData.TANK_BALL_GAP_Y, this.radius, 0, Math.PI * 2, true);
         this.ctx.closePath();
         this.ctx.fill();
         console.log(gameData.TANK_BALL_GAP_X_2)
-    };
+    }*/
 
     // TODO: function name is confusing
     moveBulletForward() {
         this.myVar= setInterval(() => { this.shootForward() }, 1000 / 60);         
          console.log("here ")
-    };
+    }
     moveBulletBackward() {
         this.myVar= setInterval(() => { this.shootBackward() }, 1000 / 60);        
          console.log("here ")
-    };
+    }
 
     stopBullet(){
         clearInterval(this.myVar);
@@ -101,7 +111,7 @@ class Tank {
         if (this.ball_start_point > 1500 || this.ball_end_point > this.y) { // if ball goes beyond canvas
             return
         }
-        this.drawBall1();        
+        this.drawBall();        
     };
 
     // TODO: function names: verb
@@ -120,7 +130,7 @@ class Tank {
             return
         }
 
-        this.drawBall2();        
+        this.drawBall();        
     };
 
       
@@ -132,13 +142,13 @@ class Tank {
                 this.x += gameData.TANK_MOVE_INTERVALS;
                 this.aim_start_point_x += gameData.TANK_AIM_MOVE_INTERVALS;
                 this.drawTank();
-                this.tankAim1()
+                this.tankAim()
             } //right arrow
             else if (Event.key === "ArrowLeft") {
                 this.x -= gameData.TANK_MOVE_INTERVALS;
                 this.aim_start_point_x -= gameData.TANK_AIM_MOVE_INTERVALS;
                 this.drawTank();
-                this.tankAim1()
+                this.tankAim()
             }
             
             //left arrow 
@@ -161,7 +171,7 @@ class Tank {
                     this.ctx.lineTo(this.aim_start_point_x + 60 + this.barrel_limit, this.aim_start_point_y - 10 + this.barrel_limit);
                     this.ctx.lineWidth = 10;
                     this.ctx.stroke();
-                    upLimit = false
+                    
                 }
 
             } //arrow up
@@ -184,7 +194,7 @@ class Tank {
                     this.ctx.lineTo(this.aim_start_point_x + 60 + this.barrel_limit, this.aim_start_point_y - 10 + this.barrel_limit);
                     this.ctx.lineWidth = 10;
                     this.ctx.stroke();
-                    downLimit = false
+                    
                 }
             }
             /*else {
@@ -208,8 +218,8 @@ class Tank {
                 gameData.Y_AXIS_SPEED = 2;
                 this.count += 1;
                 this.drawTank();
-                this.tankAim1();
-                this.drawBall1();
+                this.tankAim();
+                this.drawBall();
                 this.moveBulletForward();  
             }            
         });
@@ -227,8 +237,8 @@ class Tank {
                 gameData.Y_AXIS_SPEED = 2;
                 this.count += 1;
                 this.drawTank();
-                this.tankAim2();
-                this.drawBall2();
+                this.tankAim();
+                this.drawBall();
                 this.moveBulletBackward();  
             }
             
@@ -241,11 +251,8 @@ class Tank {
 function getData() {
     const oReq = new XMLHttpRequest();
     oReq.addEventListener('load', function () {
-            data = JSON.parse(oReq.response)            
-            highscore= data.highscore;
-            gameData = data;
-            // TANK_BARREL_GAP_Y= data.TANK_BARREL_GAP_Y; 
-            // TANK_BARREL_GAP_X= data.TANK_BARREL_GAP_X; 
+            let data = JSON.parse(oReq.response)               
+            gameData = data;             
             startGame();                                
     })
     oReq.open("GET", "data.json");
@@ -253,11 +260,11 @@ function getData() {
 }
 
 function startGame(){
-    const tank1 = new Tank(250, 400)
-    const tank2 = new Tank(700, 400)     
-    tank1.tankAim1()
+    const tank1 = new Tank(250, 400, "left")
+    const tank2 = new Tank(700, 400, "right")     
+    tank1.tankAim()
     tank1.drawTank()
-    tank2.tankAim2()
+    tank2.tankAim()
     tank2.drawTank()    
     tank1.arrowKeyControl()  
     tank2.arrowKeyControl()  
