@@ -51,15 +51,7 @@ class Tank {
 
     }
 
-    //sets the aim on left side of the tank
-    /*tankAim2() {
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.aim_start_point_x, this.aim_start_point_y);
-        this.ctx.lineTo(this.aim_start_point_x - 110, this.aim_start_point_y - 10);
-        this.ctx.lineWidth = 10;
-        this.ctx.stroke();
-
-    }*/
+    
     //making the ball to move
     drawBall() {
         this.ctx.beginPath();
@@ -74,13 +66,7 @@ class Tank {
         this.ctx.fill();
         console.log("this is a ball")
     }
-    /*drawBall2() {
-        this.ctx.beginPath();
-        this.ctx.arc(this.ball_start_point - gameData.TANK_BALL_GAP_X_2, this.ball_end_point - gameData.TANK_BALL_GAP_Y, this.radius, 0, Math.PI * 2, true);
-        this.ctx.closePath();
-        this.ctx.fill();
-        console.log(gameData.TANK_BALL_GAP_X_2)
-    }*/
+   
 
     // TODO: function name is confusing
     moveBulletForward() {
@@ -112,7 +98,7 @@ class Tank {
             return
         }
         this.drawBall();        
-    };
+    }
 
     // TODO: function names: verb
     shootBackward() {
@@ -131,24 +117,32 @@ class Tank {
         }
 
         this.drawBall();        
-    };
+    }
 
       
     // TODO: clean up the if/elses to make it more concise
     arrowKeyControl() {
         document.addEventListener("keydown", Event => {
-            this.ctx.clearRect(0, 0, innerWidth, innerHeight)
+            if(this.direction=="left"){
+                this.ctx.clearRect(this.x, this.y, 170, 150)
+            }
+            else if(this.direction=="right"){
+                this.ctx.clearRect(this.x-22, this.y, 170, 150)
+            }
+            
             if (Event.key === "ArrowRight") {
                 this.x += gameData.TANK_MOVE_INTERVALS;
                 this.aim_start_point_x += gameData.TANK_AIM_MOVE_INTERVALS;
                 this.drawTank();
                 this.tankAim()
+                console.log(this.x)
             } //right arrow
             else if (Event.key === "ArrowLeft") {
                 this.x -= gameData.TANK_MOVE_INTERVALS;
                 this.aim_start_point_x -= gameData.TANK_AIM_MOVE_INTERVALS;
                 this.drawTank();
                 this.tankAim()
+                console.log(this.x)
             }
             
             //left arrow 
@@ -197,12 +191,7 @@ class Tank {
                     
                 }
             }
-            /*else {
-                console.log("invalid key");
-                //this.ctx.drawImage(this.img, this.x, this.y, gameData.IMAGE_WIDTH, gameData.IMAGE_HEIGHT);
-                this.drawTank();
-                this.tankAim1();
-            }*/
+            
         });
     }
         buttomKeyControl1() {
@@ -261,18 +250,24 @@ function getData() {
 
 function startGame(){
     const tank1 = new Tank(250, 400, "left")
-    const tank2 = new Tank(700, 400, "right")     
+    const tank2 = new Tank(700, 400, "right") 
+    tank1.drawTank()    
     tank1.tankAim()
-    tank1.drawTank()
+    tank2.drawTank()
     tank2.tankAim()
-    tank2.drawTank()    
-    tank1.arrowKeyControl()  
-    tank2.arrowKeyControl()  
-    tank1.buttomKeyControl1()
-    tank2.buttomKeyControl2() 
+    if (turn==0){
+        tank1.arrowKeyControl()  
+        tank1.buttomKeyControl1()      
+    } 
+    else if (turn==1){
+        tank2.arrowKeyControl()
+        tank2.buttomKeyControl2() 
+    }           
+    
+    
 }
 
-let turn = 0;
+let turn = 1;
 getData();
 
 
