@@ -32,10 +32,14 @@ class Tank {
 
     }
 
+    drawImage(){
+        ctx.drawImage(img, this.x, this.y, gameData.IMAGE_WIDTH, gameData.IMAGE_HEIGHT);
+    }
+
 
     drawTank() {
         console.log("drawing tank");
-        ctx.drawImage(img, this.x, this.y, gameData.IMAGE_WIDTH, gameData.IMAGE_HEIGHT);
+        this.drawImage();
         ctx.beginPath();
         ctx.moveTo(this.aim_start_point_x, this.aim_start_point_y);
         if (this.direction == "left") {
@@ -83,10 +87,12 @@ class Tank {
     // TODO: function names: verb
     shootForward() {
         if (this.direction == "left"){
-            ctx.clearRect(this.ball_start_point + gameData.TANK_BALL_CLEAR_X_1, this.ball_end_point - gameData.TANK_BALL_CLEAR_Y, 100, 100);
+            rerender();
+            //ctx.clearRect(this.ball_start_point + gameData.TANK_BALL_CLEAR_X_1, this.ball_end_point - gameData.TANK_BALL_CLEAR_Y, 100, 100);
         }
         else if(this.direction == "right"){
-            ctx.clearRect(this.ball_start_point - gameData.TANK_BALL_CLEAR_X_2, this.ball_end_point - gameData.TANK_BALL_CLEAR_Y, 100, 100);
+            rerender();
+            //ctx.clearRect(this.ball_start_point - gameData.TANK_BALL_CLEAR_X_2, this.ball_end_point - gameData.TANK_BALL_CLEAR_Y, 100, 100);
         }
         gameData.Y_AXIS_SPEED -= gameData.GRAVITY;
         this.ball_end_point -= gameData.Y_AXIS_SPEED * 8;
@@ -118,31 +124,31 @@ class Tank {
     keyControl() {
         document.addEventListener("keydown", Event => {
             console.log(turn, this.tankTurn)
-            if (this.direction == "left") {
-                ctx.clearRect(this.x, this.y, 170, 150)
+            if (this.direction == "left") {                
+                rerender();
             }
-            else if (this.direction == "right") {
-                ctx.clearRect(this.x - 22, this.y, 170, 150)
+            else if (this.direction == "right") {                
+                rerender();
             }
 
             if (Event.key === "ArrowRight") {
                 this.x += gameData.TANK_MOVE_INTERVALS;
                 this.aim_start_point_x += gameData.TANK_AIM_MOVE_INTERVALS;
-                this.drawTank();          
+                //this.drawTank();       
                 
             } //right arrow
             else if (Event.key === "ArrowLeft") {
                 this.x -= gameData.TANK_MOVE_INTERVALS;
                 this.aim_start_point_x -= gameData.TANK_AIM_MOVE_INTERVALS;
-                this.drawTank();              
+                //this.drawTank();              
                 
             }
 
             //left arrow 
             else if (Event.key === "ArrowUp") {
-                let upLimit = true
-                if (this.barrel_limit > -30 && upLimit) {
-                    ctx.drawImage(img, this.x, this.y, gameData.IMAGE_WIDTH, gameData.IMAGE_HEIGHT);
+                
+                if (this.barrel_limit > -30 ) {
+                    this.drawImage();
                     this.barrel_limit -= gameData.UP_MOVEMENT_ON_EACH_CLICK;
                     //move the tank aim up  as the variable t changes
                     ctx.beginPath();
@@ -152,7 +158,7 @@ class Tank {
                     ctx.stroke();
                 }
                 else {
-                    ctx.drawImage(img, this.x, this.y, gameData.IMAGE_WIDTH, gameData.IMAGE_HEIGHT);
+                    this.drawImage();
                     ctx.beginPath();
                     ctx.moveTo(this.aim_start_point_x, this.aim_start_point_y);
                     ctx.lineTo(this.aim_start_point_x + 60 + this.barrel_limit, this.aim_start_point_y - 10 + this.barrel_limit);
@@ -163,9 +169,8 @@ class Tank {
 
             } //arrow up
             else if (Event.key === "ArrowDown") {
-                console.log("down");
-                let downLimit = true
-                if (this.barrel_limit < 10 && downLimit) {
+                console.log("down");                
+                if (this.barrel_limit < 10) {
                     this.drawTank();
                     this.barrel_limit += gameData.UP_MOVEMENT_ON_EACH_CLICK;
                     ctx.beginPath();
@@ -193,7 +198,7 @@ class Tank {
                     gameData.Y_AXIS_SPEED = 2;                
                     this.drawTank();                   
                     this.drawBall();
-                    this.moveBullet();  
+                    this.moveBullet();                      
                 } 
             } 
 
@@ -215,10 +220,11 @@ function getData() {
 }
 
 let turn = 0;
-function rerender(tanks) {
-    // clear canvas
-    // tank1.drawTank()
-    // tank2.drawTank();
+function rerender() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    tank1.drawTank()
+    tank2.drawTank();
+    console.log("this is rerender");
 }
 let tank1, tank2;
 function startGame() {
@@ -226,69 +232,11 @@ function startGame() {
     tank2 = new Tank(700, 400, "right")
     tank1.drawTank()
     tank2.drawTank()
-    // rerender();
-    tank1.keyControl()
-    tank2.keyControl()
-
-
-    //let count=0; 
-    /*if(collision_1()){        
-        tank1.count+=1;        
-    }  
-    else{
-        turn=1;
-    }
-    if(collision_2()){        
-        tank2.count+=1;        
-    }  
-    else{
-        turn=0;
-    }  
-    
-}*/}
-
-
-getData();
-
-/*function collision_1(){
-    if(Tankk2.ball_start_point==Tank1.x){
-        return true;
-    }
+    rerender();
+    if (turn==0){
+        tank1.keyControl()
+    }else{
+        tank2.keyControl()
+    }    
 }
-function collision_2(){
-    if(Tankk2.ball_start_point==Tank1.x){
-        return true;
-    }
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+getData();
