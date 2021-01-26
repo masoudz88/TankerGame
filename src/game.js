@@ -39,8 +39,7 @@ class Tank {
     }
 
 
-    drawTank() {
-        console.log("drawing tank");
+    drawTank() {        
         this.drawImage();
         ctx.beginPath();
         ctx.moveTo(this.aim_start_point_x, this.aim_start_point_y);
@@ -66,20 +65,19 @@ class Tank {
         }
 
         ctx.closePath();
-        ctx.fill();
-        console.log("this is a ball")
+        ctx.fill();        
     }
 
 
     // TODO: function name is confusing
     moveBullet() {
         if (this.direction == "left") {
-            this.myVar = setInterval(() => { this.shootForward() }, 1000 / 60);
+            this.myVar = setInterval(() => { this.shooting() }, 1000 / 60);
         }
         else if (this.direction == "right") {
-            this.myVar = setInterval(() => { this.shootForward() }, 1000 / 60);
+            this.myVar = setInterval(() => { this.shooting() }, 1000 / 60);
         }        
-    
+        
     }
 
     stopBullet() {
@@ -87,13 +85,13 @@ class Tank {
     }
 
     // TODO: function names: verb
-    shootForward() {
+    shooting() {
         rerender();
         gameData.Y_AXIS_SPEED -= gameData.GRAVITY;
         this.ball_end_point -= gameData.Y_AXIS_SPEED * 8;
         if (this.direction == "left"){
             this.ball_start_point += gameData.X_AXIS_SPEED * 8;
-            if (this.ball_start_point > 1500 || this.ball_end_point > this.y) { // if ball goes beyond canvas
+            if (this.ball_start_point > 1500 || this.ball_end_point > this.y+100) { // if ball goes beyond canvas
                 return
             }
         }
@@ -109,7 +107,7 @@ class Tank {
             gameData.Y_AXIS_SPEED *= -0.01; // then reverse and reduce its vertical speed
         }
         
-        this.drawBall();
+        this.drawBall();    
         
     }    
     
@@ -140,7 +138,7 @@ class Tank {
                     this.drawImage();
                     this.barrel_limit -= gameData.UP_MOVEMENT_ON_EACH_CLICK;                                           
                     this.aim_end_point_y=this.aim_end_point_y + (this.barrel_limit*0.3);  
-                    this.aim_end_point_x=this.aim_end_point_x - (this.barrel_limit*0.1);                                         
+                    //this.aim_end_point_x=this.aim_end_point_x - (this.barrel_limit*0.1);                                         
                     
                 }               
 
@@ -150,11 +148,23 @@ class Tank {
                 if (this.barrel_limit < 0) {
                     this.drawTank();
                     this.barrel_limit += gameData.UP_MOVEMENT_ON_EACH_CLICK;
-                    this.aim_end_point_y=this.aim_end_point_y - (this.barrel_limit*0.3);
+                    this.aim_end_point_y=this.aim_end_point_y - (this.barrel_limit*0.5);
                 }                
             } 
             else if (Event.key === "s" || Event.key === "S") {
-                console.log("s");
+                if(notCollision()){
+                    switch(turn){
+                        case 0:
+                            turn=1;                
+                            console.log(turn)
+                            break;
+                        case 1:
+                            turn=0;
+                            this.tankCounter-1;
+                            console.log(turn)
+                            break;
+                    }
+                };
                 if(turn == this.tankTurn) {
                     this.stopBullet()// clear the interval
                     this.ball_start_point = this.aim_start_point_x;
@@ -163,9 +173,10 @@ class Tank {
                     gameData.Y_AXIS_SPEED = 2;                
                     this.drawTank();                   
                     this.drawBall();
-                    this.moveBullet();                      
-                } 
-            } 
+                    this.moveBullet();                     
+                
+                    };                                          
+               }        
 
         });
     }
@@ -177,29 +188,40 @@ function getData() {
     const oReq = new XMLHttpRequest();
     oReq.addEventListener('load', function () {
         let data = JSON.parse(oReq.response)
-        gameData = data;
+        gameData = data;        
         startGame();
+        
     })
     oReq.open("GET", "./data.json");
     oReq.send();
 }
 
 let turn = 1;
+
 function rerender() {
     ctx.clearRect(0, 0, c.width, c.height);
     tank1.drawTank()
-    tank2.drawTank();
-    console.log("this is rerender");
+    tank2.drawTank();    
 }
 let tank1, tank2;
 function startGame() {
     tank1 = new Tank(250, 400, "left")
     tank2 = new Tank(700, 400, "right")
-    rerender();
+    rerender();     
     if (turn==0){
         tank1.keyControl()
     }else{
         tank2.keyControl()
-    }    
+    }  
+         
 }
 getData();
+
+function notCollision(){
+    if(tank1.ball_start_point> tank2.x ||tank1.ball_start_point< tank2.x){        
+        return true;
+    }
+}
+
+
+
