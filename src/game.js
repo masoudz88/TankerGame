@@ -18,7 +18,7 @@ const img = document.getElementById("tank");
 class Tank {
     constructor(x, y, direction) {
         this.direction = direction;
-        this.tankTurn= tankCounter;
+        this.tankTurn= tankCounter;        
         tankCounter++;        
         this.x = x;
         this.y = y;
@@ -107,8 +107,15 @@ class Tank {
             gameData.Y_AXIS_SPEED *= -0.01; // then reverse and reduce its vertical speed
         }
         
-        this.drawBall();    
+        this.drawBall();  
         
+        if(collision()){
+            console.log("collision");
+            //if (turn==0){
+                //turn=1;
+           // }
+            
+        };
     }    
     
 
@@ -143,8 +150,7 @@ class Tank {
                 }               
 
             } //arrow up
-            else if (Event.key === "ArrowDown") {
-                console.log("down");                
+            else if (Event.key === "ArrowDown") {                              
                 if (this.barrel_limit < 0) {
                     this.drawTank();
                     this.barrel_limit += gameData.UP_MOVEMENT_ON_EACH_CLICK;
@@ -152,20 +158,9 @@ class Tank {
                 }                
             } 
             else if (Event.key === "s" || Event.key === "S") {
-                if(notCollision()){
-                    switch(turn){
-                        case 0:
-                            turn=1;                
-                            console.log(turn)
-                            break;
-                        case 1:
-                            turn=0;
-                            this.tankCounter-1;
-                            console.log(turn)
-                            break;
-                    }
-                };
-                if(turn == this.tankTurn) {
+                console.log(turn, this.tankTurn)
+                
+                //if(turn == this.tankTurn) {
                     this.stopBullet()// clear the interval
                     this.ball_start_point = this.aim_start_point_x;
                     this.ball_end_point = this.aim_start_point_y;
@@ -173,10 +168,10 @@ class Tank {
                     gameData.Y_AXIS_SPEED = 2;                
                     this.drawTank();                   
                     this.drawBall();
-                    this.moveBullet();                     
-                
-                    };                                          
-               }        
+                    this.moveBullet();
+                                         
+                };                            
+                     
 
         });
     }
@@ -188,16 +183,15 @@ function getData() {
     const oReq = new XMLHttpRequest();
     oReq.addEventListener('load', function () {
         let data = JSON.parse(oReq.response)
-        gameData = data;        
-        startGame();
+        gameData = data;              
+        startGame();       
         
     })
     oReq.open("GET", "./data.json");
     oReq.send();
 }
 
-let turn = 1;
-
+let turn=Math.floor(Math.random() * 2);
 function rerender() {
     ctx.clearRect(0, 0, c.width, c.height);
     tank1.drawTank()
@@ -213,12 +207,18 @@ function startGame() {
     }else{
         tank2.keyControl()
     }  
+    
          
 }
 getData();
 
-function notCollision(){
-    if(tank1.ball_start_point> tank2.x ||tank1.ball_start_point< tank2.x){        
+function collision(){
+    //console.log(tank1.ball_start_point, tank2.x);
+    //console.log(tank1.ball_end_point, tank2.y);
+    if(turn == 0 && (tank1.ball_start_point > tank2.x-200 && tank1.ball_start_point< tank2.x ) && (tank1.ball_end_point > tank2.y && tank1.ball_end_point < tank2.y + 15)){        
+        return true;
+    }
+    else if(turn == 1 && (tank2.ball_start_point > tank1.x+230 && tank2.ball_start_point< tank1.x + 350) && (tank2.ball_end_point > tank1.y && tank2.ball_end_point < tank1.y + 15)){
         return true;
     }
 }
