@@ -72,11 +72,11 @@ class Tank {
     // TODO: function name is confusing
     moveBullet() {
         if (this.direction == "left") {
-            this.myVar = setInterval(() => { this.shooting() }, 1000 / 60);
+            this.myVar = setInterval(() => { this.shooting() }, 1000 / 60);            
         }
         else if (this.direction == "right") {
-            this.myVar = setInterval(() => { this.shooting() }, 1000 / 60);
-        }        
+            this.myVar = setInterval(() => { this.shooting() }, 1000 / 60);            
+        }    
         
     }
 
@@ -107,13 +107,19 @@ class Tank {
             gameData.Y_AXIS_SPEED *= -0.01; // then reverse and reduce its vertical speed
         }
         
-        this.drawBall();  
+        this.drawBall();        
         
         if(collision()){
             console.log("collision");
-            //if (turn==0){
-                //turn=1;
-           // }
+            this.count++;
+            console.log(this.count);
+            /*if (turn==tank1.tankTurn){                
+                turn=tank2.tankTurn;                
+                
+           }else if(turn==tank2.tankTurn){                
+                turn=tank1.tankTurn;                
+           } */
+           winner_identifier();    
             
         };
     }    
@@ -124,7 +130,7 @@ class Tank {
     keyControl() {
         document.addEventListener("keydown", Event => {
             console.log(turn, this.tankTurn)
-            rerender();
+            
 
             if (Event.key === "ArrowRight") {
                 this.x += gameData.TANK_MOVE_INTERVALS;
@@ -158,9 +164,8 @@ class Tank {
                 }                
             } 
             else if (Event.key === "s" || Event.key === "S") {
-                console.log(turn, this.tankTurn)
-                
-                //if(turn == this.tankTurn) {
+                console.log(turn, this.tankTurn)                
+                if(turn == this.tankTurn) {
                     this.stopBullet()// clear the interval
                     this.ball_start_point = this.aim_start_point_x;
                     this.ball_end_point = this.aim_start_point_y;
@@ -168,12 +173,13 @@ class Tank {
                     gameData.Y_AXIS_SPEED = 2;                
                     this.drawTank();                   
                     this.drawBall();
-                    this.moveBullet();
-                                         
+                    this.moveBullet();                                        
                 };                            
                      
-
+            }
+            rerender();            
         });
+        
     }
 }
 
@@ -183,8 +189,8 @@ function getData() {
     const oReq = new XMLHttpRequest();
     oReq.addEventListener('load', function () {
         let data = JSON.parse(oReq.response)
-        gameData = data;              
-        startGame();       
+        gameData = data;                    
+        startGame();                    
         
     })
     oReq.open("GET", "./data.json");
@@ -195,26 +201,18 @@ let turn=Math.floor(Math.random() * 2);
 function rerender() {
     ctx.clearRect(0, 0, c.width, c.height);
     tank1.drawTank()
-    tank2.drawTank();    
+    tank2.drawTank();         
 }
 let tank1, tank2;
 function startGame() {
     tank1 = new Tank(250, 400, "left")
-    tank2 = new Tank(700, 400, "right")
-    rerender();     
-    if (turn==0){
-        tank1.keyControl()
-    }else{
-        tank2.keyControl()
-    }  
-    
-         
+    tank2 = new Tank(700, 400, "right")    
+    rerender(); 
+    key_control_tanks();                
 }
 getData();
 
-function collision(){
-    //console.log(tank1.ball_start_point, tank2.x);
-    //console.log(tank1.ball_end_point, tank2.y);
+function collision(){    
     if(turn == 0 && (tank1.ball_start_point > tank2.x-200 && tank1.ball_start_point< tank2.x ) && (tank1.ball_end_point > tank2.y && tank1.ball_end_point < tank2.y + 15)){        
         return true;
     }
@@ -222,6 +220,32 @@ function collision(){
         return true;
     }
 }
+function key_control_tanks(){
+    if (turn==tank1.tankTurn){
+        tank1.keyControl()
+    }else{
+        tank2.keyControl()
+    } 
+}
+
+function winner_identifier(){
+    if(tank1.count==3 ||tank2.count==3){      
+        if(tank1.count>tank2.count){
+            swal("GAME OVER", "Winner is Tank 1",{
+                buttons: ["Play Again!", "Quit!"],
+            });        
+        }else if(tank2.count>tank1.count){
+            swal("GAME OVER", "Winner is Tank 2",{
+                buttons: ["Play Again!", "Quit!"],
+            }); 
+        }else{
+            swal("GAME OVER","Draw");
+        }
+    }
+}
+
+
+
 
 
 
