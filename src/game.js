@@ -10,7 +10,7 @@ let TANK_BARREL_GAP_Y, TANK_BARREL_GAP_X, TANK_MOVE_INTERVALS, TANK_AIM_MOVE_INT
 
 let tankCounter = 0;
 const c = document.getElementById("myCanvas");
-c.width = window.innerWidth;
+c.width = 2*window.innerWidth;
 c.height = window.innerHeight;
 const ctx = c.getContext("2d");
 const img = document.getElementById("tank");
@@ -91,7 +91,7 @@ class Tank {
         this.ball_end_point -= gameData.Y_AXIS_SPEED * 8;
         if (this.direction == "left"){
             this.ball_start_point += gameData.X_AXIS_SPEED * 8;
-            if (this.ball_start_point > 1500 || this.ball_end_point > this.y+100) { // if ball goes beyond canvas
+            if (this.ball_start_point > c.width || this.ball_end_point > this.y+100) { // if ball goes beyond canvas
                 return
             }
         }
@@ -111,17 +111,17 @@ class Tank {
         
         if(collision()){
             console.log("collision");
-            this.count++;
-            console.log(this.count);
-            /*if (turn==tank1.tankTurn){                
+            this.count++;            
+            if (turn==tank1.tankTurn){                
                 turn=tank2.tankTurn;                
                 
            }else if(turn==tank2.tankTurn){                
-                turn=tank1.tankTurn;                
-           } */
+                turn=tank1.tankTurn;                             
+           }
+           
            winner_identifier();    
             
-        };
+        };        
     }    
     
 
@@ -129,8 +129,8 @@ class Tank {
     // TODO: clean up the if/elses to make it more concise
     keyControl() {
         document.addEventListener("keydown", Event => {
-            console.log(turn, this.tankTurn)
-            
+            this.stopBullet();//remove interval after the turn is cahnged
+            if(turn == this.tankTurn) {
 
             if (Event.key === "ArrowRight") {
                 this.x += gameData.TANK_MOVE_INTERVALS;
@@ -165,7 +165,7 @@ class Tank {
             } 
             else if (Event.key === "s" || Event.key === "S") {
                 console.log(turn, this.tankTurn)                
-                if(turn == this.tankTurn) {
+                
                     this.stopBullet()// clear the interval
                     this.ball_start_point = this.aim_start_point_x;
                     this.ball_end_point = this.aim_start_point_y;
@@ -176,10 +176,11 @@ class Tank {
                     this.moveBullet();                                        
                 };                            
                      
-            }
-            rerender();            
+            
+            rerender(); 
+            }           
         });
-        
+     
     }
 }
 
@@ -220,23 +221,21 @@ function collision(){
         return true;
     }
 }
-function key_control_tanks(){
-    if (turn==tank1.tankTurn){
-        tank1.keyControl()
-    }else{
+function key_control_tanks(){   
+        tank1.keyControl()    
         tank2.keyControl()
-    } 
+   
 }
 
 function winner_identifier(){
     if(tank1.count==3 ||tank2.count==3){      
         if(tank1.count>tank2.count){
             swal("GAME OVER", "Winner is Tank 1",{
-                buttons: ["Play Again!", "Quit!"],
+                buttons: ["Play Again!"],
             });        
         }else if(tank2.count>tank1.count){
             swal("GAME OVER", "Winner is Tank 2",{
-                buttons: ["Play Again!", "Quit!"],
+                buttons: ["Play Again!"],
             }); 
         }else{
             swal("GAME OVER","Draw");
