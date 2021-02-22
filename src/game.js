@@ -133,16 +133,20 @@ class Tank {
             if(turn == this.tankTurn) {
 
             if (Event.key === "ArrowRight") {
+                if(this.x<=c.width-160 ){
                 this.x += gameData.TANK_MOVE_INTERVALS;
                 this.aim_start_point_x += gameData.TANK_AIM_MOVE_INTERVALS;
-                this.aim_end_point_x += gameData.TANK_AIM_MOVE_INTERVALS;                      
+                this.aim_end_point_x += gameData.TANK_AIM_MOVE_INTERVALS;            
                 
+                }                
             } //right arrow
             else if (Event.key === "ArrowLeft") {
+                if(this.x>=20 ){
                 this.x -= gameData.TANK_MOVE_INTERVALS;
                 this.aim_start_point_x -= gameData.TANK_AIM_MOVE_INTERVALS;
-                this.aim_end_point_x -= gameData.TANK_AIM_MOVE_INTERVALS;                             
-                
+                this.aim_end_point_x -= gameData.TANK_AIM_MOVE_INTERVALS; 
+                console.log(this.x);                  
+                }        
             }
             //left arrow 
             else if (Event.key === "ArrowUp") {
