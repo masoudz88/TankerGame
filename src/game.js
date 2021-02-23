@@ -10,7 +10,7 @@ let TANK_BARREL_GAP_Y, TANK_BARREL_GAP_X, TANK_MOVE_INTERVALS, TANK_AIM_MOVE_INT
 
 let tankCounter = 0;
 const c = document.getElementById("myCanvas");
-c.width = 2*window.innerWidth;
+c.width = 2*(window.innerWidth);
 c.height = window.innerHeight;
 const ctx = c.getContext("2d");
 const img = document.getElementById("tank");
@@ -235,11 +235,11 @@ function winner_identifier(){
     if(tank1.count==3 ||tank2.count==3){      
         if(tank1.count>tank2.count){
             swal("GAME OVER", "Winner is Tank 1",{
-                buttons: ["Play Again!"],
+                button: "Play Again!",
             });        
         }else if(tank2.count>tank1.count){
             swal("GAME OVER", "Winner is Tank 2",{
-                buttons: ["Play Again!"],
+                button: "Play Again!",
             }); 
         }else{
             swal("GAME OVER","Draw");
